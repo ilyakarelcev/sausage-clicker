@@ -1,27 +1,48 @@
 body {
     margin: 0;
     padding: 0;
-    background-color: #f0f4f8;
-    color: #333;
+    background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    color: #fff;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     overflow: hidden;
+}
+
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 .container {
     text-align: center;
+    padding: 0 20px;
+    width: 100%;
+    max-width: 600px;
+    box-sizing: border-box;
 }
 
 h1 {
-    font-size: 3rem;
+    font-size: clamp(2rem, 8vw, 3rem);
+    /* Responsive font size */
     margin-bottom: 2rem;
-    color: #e74c3c;
+    color: #fff;
     text-transform: uppercase;
     letter-spacing: 2px;
-    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
 .game-area {
@@ -30,11 +51,13 @@ h1 {
 }
 
 #sausage {
-    width: 300px;
-    /* Adjust based on actual image size */
+    width: 100%;
+    max-width: 300px;
+    /* Limit max size */
+    height: auto;
     cursor: pointer;
     transition: transform 0.1s;
-    filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.2));
+    filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.5));
 }
 
 #sausage:active {
@@ -56,22 +79,48 @@ h1 {
 }
 
 .counter-container {
-    font-size: 4rem;
+    font-size: clamp(3rem, 10vw, 4rem);
     font-weight: bold;
-    color: #2c3e50;
-    background: white;
+    color: #333;
+    background: rgba(255, 255, 255, 0.9);
     padding: 1rem 3rem;
     border-radius: 50px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
     display: inline-block;
 }
 
 .message {
-    min-height: 2rem;
+    min-height: 3rem;
     margin-bottom: 2rem;
-    font-size: 1.5rem;
+    font-size: clamp(1.2rem, 5vw, 1.8rem);
     font-weight: bold;
-    color: #e67e22;
-    font-style: italic;
-    transition: opacity 0.3s ease;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+    word-wrap: break-word;
+    opacity: 0;
+    /* Hidden by default */
+    transform: scale(0.5);
+}
+
+.message.show {
+    opacity: 1;
+    transform: scale(1);
+    animation: pop-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes pop-in {
+    0% {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+
+    70% {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
 }

@@ -1,9 +1,27 @@
-
 const sausage = document.getElementById('sausage');
 const counterDisplay = document.getElementById('counter');
 const messageDisplay = document.getElementById('message');
 let count = 0;
 let messageIndex = 0;
+
+const colors = [
+    '#FF355E', '#FF6037', '#FF9966', '#FF9933', '#FFCC33', '#FFFF66',
+    '#CCFF00', '#66FF66', '#AAF0D1', '#50BFE6', '#FF6EFF', '#EE34D2',
+    '#FF00CC', '#FF0099'
+];
+
+const gradients = [
+    'linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d)',
+    'linear-gradient(135deg, #20002c, #cbb4d4)',
+    'linear-gradient(135deg, #cc2b5e, #753a88)',
+    'linear-gradient(135deg, #42275a, #734b6d)',
+    'linear-gradient(135deg, #614385, #516395)',
+    'linear-gradient(135deg, #0f2027, #203a43, #2c5364)',
+    'linear-gradient(135deg, #3a1c71, #d76d77, #ffaf7b)',
+    'linear-gradient(135deg, #1f4037, #99f2c8)',
+    'linear-gradient(135deg, #8360c3, #2ebf91)',
+    'linear-gradient(135deg, #f7797d, #FBD786, #C6FFDD)'
+];
 
 const phrases = [
     "Лера, ты так нежно трогаешь сосиску...",
@@ -11,6 +29,7 @@ const phrases = [
     "Лера, как же ловко ты управляешься с этим размером...",
     "Ммм, Лера, сосиске нравится, когда ты так делаешь...",
     "Продолжай, Лера, сосиска начинает разогреваться...",
+    "Лера, ты делаешь сосиске очень приятно...",
     "У тебя талант трогать сосиски, Лера...",
     "Лера, быстрее! Сосиска хочет больше!",
     "Каждое твое касание заставляет сосиску крутиться...",
@@ -19,6 +38,7 @@ const phrases = [
     "Лера, ты заставляешь её вертеться от удовольствия...",
     "Никто не трогает сосиску так, как ты, Лера...",
     "Лера, это было очень горячее нажатие...",
+    "Ещё разок, Лера, сосиске это нужно...",
     "Лера, ты знаешь толк в колбасных изделиях...",
     "Твои пальчики просто созданы для этой сосиски, Лера...",
     "О да, Лера, именно так, нажимай сильнее...",
@@ -74,6 +94,22 @@ sausage.addEventListener('click', () => {
     // Show message every 5 clicks
     if (count % 5 === 0) {
         messageDisplay.textContent = phrases[messageIndex];
+
+        // Random neon color text
+        const randomColor = colors[Math.floor(Math.random() * colors.length)];
+        messageDisplay.style.color = randomColor;
+
+        // Change background gradient logic
+        const randomGradient = gradients[Math.floor(Math.random() * gradients.length)];
+        document.body.style.background = randomGradient;
+        document.body.style.backgroundSize = "400% 400%";
+        document.body.style.animation = "gradientBG 15s ease infinite";
+
+        // Pop in animation
+        messageDisplay.classList.remove('show');
+        void messageDisplay.offsetWidth; // Trigger reflow
+        messageDisplay.classList.add('show');
+
         messageIndex = (messageIndex + 1) % phrases.length;
     }
 
@@ -86,4 +122,3 @@ sausage.addEventListener('click', () => {
 
     sausage.classList.add('spin');
 });
-
