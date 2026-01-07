@@ -5,16 +5,14 @@ body {
     background-size: 400% 400%;
     animation: gradientBG 20s ease infinite;
     color: #e0e0e0;
-    /* Light gray base */
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
     justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    overflow-y: auto;
-    /* Enable vertical scrolling */
-    padding-bottom: 50px;
-    /* Safe space at the bottom */
+    align-items: flex-start;
+    /* Align to top to control vertical stacking manually */
+    height: 100vh;
+    overflow: hidden;
+    /* Prevent scrolling, fits in one screen */
 }
 
 @keyframes gradientBG {
@@ -33,96 +31,164 @@ body {
 
 .container {
     text-align: center;
-    padding: 0 20px;
     width: 100%;
     max-width: 600px;
+    height: 100vh;
+    /* Fill full height */
     box-sizing: border-box;
     position: relative;
     z-index: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* Center content block vertically generally, but items have fixed heights */
+    align-items: center;
+    padding: 2vh 10px;
 }
 
+/* 1. Header */
 h1 {
-    font-size: clamp(1.5rem, 6vw, 2.5rem);
-    /* Smaller header */
-    margin-bottom: 0.5rem;
-    /* Less space below header */
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    height: 8vh;
+    /* Fixed % height */
+    line-height: 8vh;
+    margin: 0 0 2vh 0;
+    /* Spacing below */
     color: #ffccbc;
-    /* Light pastel orange/pink */
     text-transform: uppercase;
     letter-spacing: 2px;
     text-shadow: 0 0 15px rgba(255, 204, 188, 0.3);
-}
-
-.game-area {
-    margin-bottom: 1rem;
-    /* Less space below image */
-    perspective: 1000px;
-    height: 250px;
-    /* Reduced fixed height */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
+}
+
+/* 2. Game Area (Sausage) */
+.game-area {
+    height: 35vh;
+    /* Fixed % height */
+    margin-bottom: 2vh;
+    perspective: 1000px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
 }
 
 #sausage {
     width: auto;
-    max-width: 100%;
-    max-height: 200px;
-    /* Smaller max height */
+    max-width: 90%;
+    max-height: 100%;
+    /* Fit within the 35vh container */
     cursor: pointer;
-    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform: scale(var(--current-scale, 0.5));
+    transition: transform 0.05s ease-out;
+    user-select: none;
+    -webkit-user-drag: none;
     filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.1));
 }
 
-#sausage:active {
-    transform: scale(0.95);
-    /* Basic active click override by JS later */
+#sausage.pressed {
+    transform: scale(calc(var(--current-scale, 0.5) * 0.9));
 }
 
-.spin {
-    animation: spin-animation 0.5s ease-in-out;
+#sausage.spring {
+    animation: spring 0.5s linear;
 }
 
-@keyframes spin-animation {
+@keyframes spring {
     0% {
-        transform: rotate(0deg) scale(var(--current-scale, 1));
+        transform: scale(calc(var(--current-scale) * 0.9));
+    }
+
+    40% {
+        transform: scale(calc(var(--current-scale) * 1.15));
+    }
+
+    60% {
+        transform: scale(calc(var(--current-scale) * 0.95));
+    }
+
+    80% {
+        transform: scale(calc(var(--current-scale) * 1.05));
     }
 
     100% {
-        transform: rotate(360deg) scale(var(--current-scale, 1));
+        transform: scale(var(--current-scale));
     }
 }
 
-.counter-container {
-    font-size: clamp(3rem, 10vw, 4rem);
-    font-weight: bold;
-    color: #dcedc8;
-    /* Light pastel green */
-    background: rgba(255, 255, 255, 0.05);
-    /* very transparent */
-    padding: 1rem 3rem;
-    border-radius: 50px;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-    display: inline-block;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+/* 3. Progress Bar */
+.progress-container {
+    width: 90%;
+    /* Wider as requested */
+    height: 3vh;
+    /* Fixed % height */
+    margin-bottom: 2vh;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
 }
 
+.progress-bar {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #ff9966, #ff5e62);
+    box-shadow: 0 0 20px #ff5e62;
+    transition: width 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    border-radius: 10px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1;
+}
+
+.progress-bar.full {
+    background: linear-gradient(90deg, #00f260, #0575e6);
+    box-shadow: 0 0 30px #0575e6;
+}
+
+#progress-text {
+    position: relative;
+    z-index: 2;
+    color: #fff;
+    font-size: 1.5vh;
+    /* Relative font size */
+    font-weight: bold;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* 4. Message Text */
 .message {
-    min-height: 4rem;
-    /* More space for multiple lines */
-    margin-bottom: 2rem;
-    font-size: clamp(1.2rem, 5vw, 1.8rem);
+    height: 15vh;
+    /* Fixed % height */
+    width: 100%;
+    margin-bottom: 2vh;
+    font-size: clamp(1rem, 2.5vh, 1.5rem);
     font-weight: bold;
     text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
     transition: all 0.3s ease;
     word-wrap: break-word;
     opacity: 0;
-    /* Hidden by default */
     transform: scale(0.5);
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
+    padding: 0 10px;
+    flex-shrink: 0;
 }
 
 .message.show {
@@ -146,4 +212,26 @@ h1 {
         opacity: 1;
         transform: scale(1);
     }
+}
+
+/* 5. Counter */
+.counter-container {
+    height: 6vh;
+    /* Fixed % height */
+    font-size: 4vh;
+    /* Relative font size approx height */
+    line-height: 6vh;
+    font-weight: bold;
+    color: #dcedc8;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0 2rem;
+    border-radius: 50px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    display: inline-flex;
+    /* Use flex to center text inside */
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
 }
